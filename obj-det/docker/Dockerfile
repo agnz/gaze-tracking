@@ -1,9 +1,9 @@
 FROM tensorflow/tensorflow:1.8.0-gpu-py3
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-  python-lxml \
-  python-pil \
-  python-tk \
+  python3-lxml \
+  python3-pil \
+  python3-tk \
   git \
   && rm -rf /var/lib/apt/lists/*
 
@@ -18,11 +18,20 @@ WORKDIR /
 # clone the models repo
 RUN git clone https://github.com/tensorflow/models.git
 
-WORKDIR models/research
+RUN git clone https://github.com/cocodataset/cocoapi.git
 
-RUN protoc object_detection/protos/*.proto --python_out=.
+WORKDIR cocoapi/PythonAPI
+
+RUN pip3 install Cython matplotlib \
+  && python3 setup.py build_ext install \
+  && rm -rf build
+
+WORKDIR /models/research
+
+RUN protoc object_detection/protos/*.proto --python_out=. \
+  && python3 setup.py install
+
 RUN echo "export PYTHONPATH=${PYTHONPATH}:`pwd`:`pwd`/slim" >> ~/.bashrc
-RUN python3 setup.py install
 
 CMD ["/bin/bash"]
 #CMD ["tail", "-f", "/dev/null"]
