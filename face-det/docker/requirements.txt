@@ -1,0 +1,9 @@
+numpy
+scikit-image
+imageio
+dlib
+sklearn
+names
+h5py
+requests
+networkx
