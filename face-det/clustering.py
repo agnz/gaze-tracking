@@ -102,7 +102,7 @@ def _chinese_whispers(encodings, tubelet_overlap, threshold=0.4, iterations=20):
 
             # find the class with the highest edge weight sum
             edge_weight_sum = 0
-            max_cluster = 0
+            max_cluster = G.node[node]['cluster']
             #use the max sum of neighbor weights class as current node's class
             for cluster in clusters:
                 if clusters[cluster] > edge_weight_sum:
@@ -120,10 +120,9 @@ def _chinese_whispers(encodings, tubelet_overlap, threshold=0.4, iterations=20):
         cluster = data['cluster']
         original_idx = data['original_idx']
 
-        if cluster:
-            if cluster not in clusters:
-                clusters[cluster] = []
-            clusters[cluster].append(original_idx)
+        if cluster not in clusters:
+            clusters[cluster] = []
+        clusters[cluster].append(original_idx)
 
     # Sort cluster output
     sorted_clusters = sorted(list(clusters.values()), key=len, reverse=True)

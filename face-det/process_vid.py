@@ -286,7 +286,7 @@ def annotate_vid(dataset: dict, out_vid_fname: str = '', fps: int = 0, limit: in
             # draw.rectangle(det['bbox'], outline='red')
 
             # if the detection has been assigned a label, print it into the image
-            label = det['label_str'].decode("utf-8")
+            label = det['label_str']#.decode("utf-8")
             if not label:
                 label = ' '  # setting to ' ' instead of '' due to bug in pillow
             draw.text((bbox_aligned[0][0] + 2, bbox_aligned[0][1]), "{}".format(label), font=fnt,
@@ -635,7 +635,6 @@ if __name__ == "__main__":
     names_ = []
     for ll in labels:
         names_.append(names.get_first_name(gender='female'))
-
     for label, tubelet_ids in enumerate(labels):
         for tubelet_id in tubelet_ids:
             tubelet = dataset['tubelets'][tubelet_id]
