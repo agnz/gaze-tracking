@@ -2,14 +2,13 @@ import tensorflow as tf
 import numpy as np
 import xml.etree.ElementTree as ET
 import os
+import dataset_util
 
 def cvat_xml_parser(xml_path):
     tree = ET.parse(xml_path)
     root = tree.getroot()
 
     objects_dic = {'cards' : 1, 'dice' : 2, 'key' : 3, 'map' : 4, 'phone' : 5, 'spider' : 6}
-    height = 1280
-    width = 720
     size = int(root.find('meta').find('task').find('size').text)
     frames_data = [None] * size
 
@@ -28,10 +27,10 @@ def cvat_xml_parser(xml_path):
         label = track.attrib['label']
         for bbox in track.findall('box'):
             frame_id = int(bbox.attrib['frame'])
-            xmin = bbox.attrib['xtl']
-            xmax = bbox.attrib['xbr']
-            ymin = bbox.attrib['ytl']
-            ymax = bbox.attrib['ybr']
+            xmin = float(bbox.attrib['xtl'])
+            xmax = float(bbox.attrib['xbr'])
+            ymin = float(bbox.attrib['ytl'])
+            ymax = float(bbox.attrib['ybr'])
             class_text = label
             class_ = objects_dic[class_text]
             frames_data[frame_id]['xmins'].append(xmin)
@@ -47,15 +46,17 @@ def main(_):
 
     xml_path = '19_andy.xml'
     dataset_dir = 'data'
-    data_dir = 'andy'
+    data_dir = 'Andy'
     output_path = 'out.record'
+    height = 1280
+    width = 720
 
     frames_data, size = cvat_xml_parser(xml_path)
 
     writer = tf.python_io.TFRecordWriter(output_path)
 
-    for i in range (0, size):
-        img_path = os.path.join(data_dir, str(i) + '.jpg')
+    for i in range (1, size, 2):
+        img_path = os.path.join(data_dir, '_Image_' + str(i).zfill(5) + '.jpg')
         full_path = os.path.join(dataset_dir, img_path)
         with tf.gfile.GFile(full_path, 'rb') as fid:
             encoded_jpg = fid.read()
