@@ -3,6 +3,7 @@ import numpy as np
 import xml.etree.ElementTree as ET
 import os
 import dataset_util
+import string
 
 def cvat_xml_parser(xml_path):
     tree = ET.parse(xml_path)
@@ -24,7 +25,8 @@ def cvat_xml_parser(xml_path):
         frames_data[i] = frame_dic
 
     for track in root.iter('track'):
-        label = track.attrib['label']
+        label = track.attrib['label'].lower().translate(None, string.punctuation)
+	
         for bbox in track.findall('box'):
             frame_id = int(bbox.attrib['frame'])
             xmin = float(bbox.attrib['xtl'])
