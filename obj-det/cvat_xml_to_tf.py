@@ -3,9 +3,11 @@ import numpy as np
 import xml.etree.ElementTree as ET
 import os
 import dataset_util
+import label_map_util
 import string
 
-def cvat_xml_parser(xml_path):
+def cvat_xml_parser(xml_path, label_map_path):
+
     '''
 	:param: xml_path
 	:output: frames_data, size
@@ -14,11 +16,11 @@ def cvat_xml_parser(xml_path):
 	Organizes the bounding box coordinates by xmin, ymin, xmax, class_text, and class number, which
 	is then put in a dictionary sorting the arrays into a dictionary for each frame. The dictionary is
 	then put into an array consisting of all the frames ordered by frame number.
-	'''
+    '''
+
     tree = ET.parse(xml_path)
     root = tree.getroot()
-
-    objects_dic = {'cards' : 1, 'dice' : 2, 'key' : 3, 'map' : 4, 'phone' : 5, 'spider' : 6}
+    label_map_dict = label_map_util.get_label_map_dict(label_map_path)
     size = int(root.find('meta').find('task').find('size').text)
     frames_data = [None] * size
 
@@ -43,7 +45,7 @@ def cvat_xml_parser(xml_path):
             ymin = float(bbox.attrib['ytl'])
             ymax = float(bbox.attrib['ybr'])
             class_text = label
-            class_ = objects_dic[class_text]
+            class_ = label_map_dict[class_text]
             frames_data[frame_id]['xmins'].append(xmin)
             frames_data[frame_id]['xmaxs'].append(xmax)
             frames_data[frame_id]['ymins'].append(ymin)
@@ -63,10 +65,11 @@ def main(_):
     dataset_dir = 'data'
     data_dir = 'Andy'
     output_path = 'out.record'
+    label_map_path = 'pascal_label_map'
     height = 1280
     width = 720
 
-    frames_data, size = cvat_xml_parser(xml_path)
+    frames_data, size = cvat_xml_parser(xml_path, label_map_path)
 
     writer = tf.python_io.TFRecordWriter(output_path)
 
