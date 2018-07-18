@@ -1,6 +1,6 @@
 import xml.etree.ElementTree as ET
 
-tree = ET.parse('Map_1.xml')
+tree = ET.parse('19_andy.xml')
 root = tree.getroot()
 
 
@@ -47,10 +47,10 @@ def create_pascal_xml_structure():
 def get_annotation_box():
     '''Returns a list of dictionaries of frame number, truncated, xmin, xmax, ymin, ymax of all the boxes annotated in xml file'''
     boxes = []
-    name = root.find('track').attrib['label']
+    label = [x.attrib['label'] for x in root.findall('track')]
     for box in root.iter('box'):
         box.attrib.pop('keyframe')
-        box.attrib['truncated'] = box.attrib.pop('occluded')
+        box.attrib['truncated'] = box.attrib.pop('outside')
         box.attrib['xmin'] = box.attrib.pop('xtl')
         box.attrib['ymin'] = box.attrib.pop('ytl')
         box.attrib['xmax'] = box.attrib.pop('xbr')
@@ -58,9 +58,9 @@ def get_annotation_box():
 
         boxes.append(box.attrib)
 
-    return name,boxes
+    return label
 
 
 
-print(get_annotation_box())
+print(int(root.find('meta').find('task').find('size').text))
 
