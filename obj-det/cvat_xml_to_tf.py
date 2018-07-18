@@ -6,6 +6,15 @@ import dataset_util
 import string
 
 def cvat_xml_parser(xml_path):
+    '''
+	:param: xml_path
+	:output: frames_data, size
+	
+	Finds the path to the xml file outputted by CVAT annotation tool and parses through.
+	Organizes the bounding box coordinates by xmin, ymin, xmax, class_text, and class number, which
+	is then put in a dictionary sorting the arrays into a dictionary for each frame. The dictionary is
+	then put into an array consisting of all the frames ordered by frame number.
+	'''
     tree = ET.parse(xml_path)
     root = tree.getroot()
 
@@ -26,7 +35,7 @@ def cvat_xml_parser(xml_path):
 
     for track in root.iter('track'):
         label = track.attrib['label'].lower().translate(None, string.punctuation)
-	
+
         for bbox in track.findall('box'):
             frame_id = int(bbox.attrib['frame'])
             xmin = float(bbox.attrib['xtl'])
@@ -45,7 +54,11 @@ def cvat_xml_parser(xml_path):
     return frames_data, size
 
 def main(_):
-
+	'''
+	Reads the list of dictionaries in the format which is outputted by cvat_xml_parser and 
+	writes it as a tf record file. Needs the path to the images extracted from the video of the
+	corresponding xml file.
+	'''
     xml_path = '19_andy.xml'
     dataset_dir = 'data'
     data_dir = 'Andy'
