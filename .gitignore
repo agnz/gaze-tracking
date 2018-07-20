@@ -1,7 +1,7 @@
 # Project specific
 *.mp4
 *.avi
-.record
+*.record
 
 # Others
 Thumbs.db
