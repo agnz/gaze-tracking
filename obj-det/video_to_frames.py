@@ -34,7 +34,7 @@ def printProgressBar (iteration, total, prefix = 'Progress:', suffix = 'complete
 
 def extract_frames_from_video():
 	input_loc = sys.argv[1]
-	output_loc = sys.argv[2]
+	output_loc = data/sys.argv[2]
 
 	try:
 		os.mkdir(output_loc)
