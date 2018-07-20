@@ -641,6 +641,6 @@ if __name__ == "__main__":
             for k, n in tubelet:
                 dataset['data'][k][n]['label_str'] = names_[label]
 
-    annotate_vid(dataset, out_vid_fname='blah.mp4', fps=10, limit=-1)
+    annotate_vid(dataset, out_vid_fname='cut2_tracked.mp4', fps=10, limit=-1)
 
     save_dataset(dataset, dataset_fname)
