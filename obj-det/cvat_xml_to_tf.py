@@ -89,7 +89,7 @@ def main(_):
     writer = tf.python_io.TFRecordWriter(output_path)
     
     #loops over all the images and writes the image information along with the correspoding bbox info to the example
-    for i in range (1, size+1):
+    for i in range (1, size+1,2):
         img_path = os.path.join(data_dir, '_Image_' + str(i).zfill(5) + '.jpg')
         full_path = os.path.join(dataset_dir, img_path).encode('utf-8')
 
