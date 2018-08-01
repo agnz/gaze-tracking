@@ -2,11 +2,11 @@ import logging
 
 import tensorflow as tf
 from google.protobuf import text_format
-<<<<<<< HEAD
-from object_detection.protos import string_int_label_map_pb2
-=======
+
+#from object_detection.protos import string_int_label_map_pb2
+
 import string_int_label_map_pb2
->>>>>>> 65b33857563efceb2ecdb81939c48985c7d53436
+
 
 
 def _validate_label_map(label_map):
@@ -152,8 +152,6 @@ def create_category_index_from_labelmap(label_map_path):
 
 def create_class_agnostic_category_index():
   """Creates a category index with a single `object` class."""
-<<<<<<< HEAD
+
   return {1: {'id': 1, 'name': 'object'}}
-=======
-  return {1: {'id': 1, 'name': 'object'}}
->>>>>>> 65b33857563efceb2ecdb81939c48985c7d53436
+
