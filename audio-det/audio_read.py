@@ -68,16 +68,47 @@ def get_TPR_FPR(hits, ground_truth_hits):
     Compares the hits from the x_correlate and the ground_truth_hits and returns
     True Positive Rate: where both arrays have True at the same index divided by all ground truth hits
     False Positive Rate: where the hits array has a 1 but the ground truth does not, divided by ground truth non-hits
-    :param hits:
-    :param ground_truth_hits:
-    :return:TPR, FPR
-    '''
-    positive_idx = np.where(hits==1)
-    TPR = np.sum(np.logical_and(hits[positive_idx], ground_truth_hits[positive_idx]))
-    FPR = np.sum(np.logical_xor(hits[positive_idx], ground_truth_hits[positive_idx]))
 
-    TPR /= len(ground_truth_hits[ground_truth_hits==1])
-    FPR /= len(ground_truth_hits[ground_truth_hits==0])
+    Truth Table
+
+    True Positive                           False Positive
+
+    Predicted | GT | TP Value               Predicted | GT | FP Value
+    ---------------------------             ---------------------------
+        1     |  0 |    0                       1     |  0 |    1
+    ---------------------------             ---------------------------
+        1     |  1 |    1                       1     |  1 |    0
+
+    True Negative                           False Negative
+
+    Predicted | GT | TN Value               Predicted | GT | FN Value
+    ---------------------------             ---------------------------
+        0     |  0 |    1                       0     |  0 |    0
+    ---------------------------             ---------------------------
+        0     |  1 |    0                       0     |  1 |    1
+
+    We can see that the TP value matches the GT value and that the FN value matches the ground truth value
+    where the predicted values are 1 and 0, respectively. If we just find the indices where the predicted values
+    are True and the indices where predicted values are False, then this calculation is trivial
+
+    :param hits: array of True and False
+    :param ground_truth_hits: array of True and False
+    :return TPR, FPR: float of True positive rate and False positive rate
+    '''
+    positive_idx = np.where(hits==True) #get indices where predicted hits are true
+    TP = np.sum(ground_truth_hits[positive_idx])
+    FP = np.sum(np.logical_not(TP))
+
+    negative_idx = np.where(hits==False) #get indices where predicted values are false
+    FN = np.sum(ground_truth_hits[negative_idx])
+    TN = np.sum(np.logical_not(FN))
+
+    #Recall calculation
+    TPR = TP/(TP+FN)
+
+    #1 - Specificity calculation
+    FPR = FP/(TN+FP)
+
     return TPR, FPR
 
 def get_GT_chunks(length_audio, knock_timestamp):
